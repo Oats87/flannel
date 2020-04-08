@@ -1,13 +1,10 @@
-FROM alpine
-
-LABEL maintainer="Tom Denham <tom@tigera.io>"
+FROM debian:buster
 
 ENV FLANNEL_ARCH=amd64
 
-RUN apk add --no-cache iproute2 net-tools ca-certificates iptables strongswan && update-ca-certificates
-RUN apk add wireguard-tools --no-cache --repository http://dl-cdn.alpinelinux.org/alpine/edge/community
+RUN apt-get update && apt-get install -y net-tools ca-certificates iptables strongswan && update-ca-certificates
+
 COPY dist/flanneld-$FLANNEL_ARCH /opt/bin/flanneld
-COPY dist/mk-docker-opts.sh /opt/bin/
+COPY dist/mk-docker-opts.sh /opt/bin
 
 ENTRYPOINT ["/opt/bin/flanneld"]
-
